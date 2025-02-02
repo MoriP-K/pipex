@@ -1,19 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:30 by kmoriyam         ###   ########.fr       */
+/*   Created: 2024/10/27 11:57:17 by kmoriyam          #+#    #+#             */
+/*   Updated: 2024/11/03 14:35:05 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include <unistd.h>
 
-int	main()
+void	ft_putstr_fd(char *s, int fd)
 {
-	printf("test: %s\n", "hello, world!");
-	return (0);
+	size_t	i;
+
+	if (!s)
+		return ;
+	i = 0;
+	while (s[i])
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
 }

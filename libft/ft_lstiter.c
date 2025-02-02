@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_lstiter.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:30 by kmoriyam         ###   ########.fr       */
+/*   Created: 2024/10/28 02:54:45 by kmoriyam          #+#    #+#             */
+/*   Updated: 2024/10/28 04:25:35 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	main()
+void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
-	printf("test: %s\n", "hello, world!");
-	return (0);
+	if (!lst || !f)
+		return ;
+	while (lst)
+	{
+		f(lst->content);
+		lst = lst->next;
+	}
 }

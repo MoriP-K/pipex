@@ -1,19 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:30 by kmoriyam         ###   ########.fr       */
+/*   Created: 2024/10/23 14:17:53 by kmoriyam          #+#    #+#             */
+/*   Updated: 2025/01/11 13:40:22 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	main()
+void	ft_bzero(void *s, size_t n)
 {
-	printf("test: %s\n", "hello, world!");
-	return (0);
+	if (!s)
+		return ;
+	ft_memset(s, 0, n);
 }

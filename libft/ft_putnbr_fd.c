@@ -1,19 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:30 by kmoriyam         ###   ########.fr       */
+/*   Created: 2024/10/27 12:44:33 by kmoriyam          #+#    #+#             */
+/*   Updated: 2024/11/03 14:33:03 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	main()
+void	ft_putnbr_fd(int n, int fd)
 {
-	printf("test: %s\n", "hello, world!");
-	return (0);
+	char	c;
+
+	if (n < 0)
+	{
+		write(fd, "-", 1);
+		if (n == -2147483648)
+		{
+			write(fd, "2147483648", 10);
+			return ;
+		}
+		n = -n;
+	}
+	if (n >= 10)
+		ft_putnbr_fd(n / 10, fd);
+	c = n % 10 + '0';
+	write(fd, &c, 1);
 }

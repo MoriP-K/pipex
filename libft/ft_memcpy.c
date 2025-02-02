@@ -1,19 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:30 by kmoriyam         ###   ########.fr       */
+/*   Created: 2024/10/23 15:09:48 by kmoriyam          #+#    #+#             */
+/*   Updated: 2025/01/11 13:41:46 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	main()
+void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
-	printf("test: %s\n", "hello, world!");
-	return (0);
+	size_t			i;
+	unsigned char	*dest_p;
+	unsigned char	*src_p;
+
+	i = 0;
+	dest_p = (unsigned char *)dest;
+	src_p = (unsigned char *)src;
+	while (i < n)
+	{
+		dest_p[i] = src_p[i];
+		i++;
+	}
+	return (dest);
 }

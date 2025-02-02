@@ -1,19 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:30 by kmoriyam         ###   ########.fr       */
+/*   Created: 2024/10/24 18:28:40 by kmoriyam          #+#    #+#             */
+/*   Updated: 2025/01/11 13:40:31 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	main()
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	printf("test: %s\n", "hello, world!");
-	return (0);
+	void	*new;
+
+	if ((nmemb != 0 && size != 0) && nmemb > INT_MAX / size)
+		return (NULL);
+	new = malloc(nmemb * size);
+	if (!new)
+		return (NULL);
+	ft_bzero(new, nmemb * size);
+	return (new);
 }

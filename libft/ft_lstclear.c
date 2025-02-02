@@ -1,19 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:30 by kmoriyam         ###   ########.fr       */
+/*   Created: 2024/10/28 02:15:14 by kmoriyam          #+#    #+#             */
+/*   Updated: 2025/01/11 13:41:12 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	main()
+void	ft_lstclear(t_list **lst, void (*del)(void*))
 {
-	printf("test: %s\n", "hello, world!");
-	return (0);
+	t_list	*current;
+	t_list	*tmp;
+
+	if (!*lst || !del)
+		return ;
+	current = *lst;
+	while (current)
+	{
+		tmp = current->next;
+		ft_lstdelone(current, del);
+		current = tmp;
+	}
+	*lst = NULL;
 }

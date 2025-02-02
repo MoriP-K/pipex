@@ -1,19 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:30 by kmoriyam         ###   ########.fr       */
+/*   Created: 2024/10/23 12:26:31 by kmoriyam          #+#    #+#             */
+/*   Updated: 2025/01/11 13:42:29 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "libft.h"
 
-int	main()
+void	*ft_memset(void *s, int c, size_t n)
 {
-	printf("test: %s\n", "hello, world!");
-	return (0);
+	size_t			i;
+	unsigned char	*dest;
+
+	if (!s)
+		return (NULL);
+	dest = (unsigned char *)s;
+	i = 0;
+	while (i < n)
+	{
+		dest[i] = (unsigned char)c;
+		i++;
+	}
+	return (s);
 }
