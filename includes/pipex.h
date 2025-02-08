@@ -6,10 +6,12 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 23:43:52 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/02 23:44:16 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/02/08 23:07:48 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>

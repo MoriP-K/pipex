@@ -14,6 +14,7 @@ vpath %.c ./src
 
 ifeq ($(DEBUG), true)
 CFLAGS += -g -O0 -fsanitize=address
+CFLAGS := -Wall -Wextra 
 endif
 
 all: $(LIBFT) $(NAME)
@@ -33,7 +34,7 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 clean:
-	$(RM) -r $(NAME) $(OBJ) $(OBJDIR)
+	$(RM) -r $(OBJ) $(OBJDIR)
 	$(MAKE) -C $(LIBFTDIR) clean
 
 fclean: clean
@@ -46,7 +47,7 @@ re: fclean
 rr :
 	make re && make clean
 
-debug: clean
+d: clean
 	$(MAKE) DEBUG=true
 
-.PHONY: all clean fclean re rr debug bonus
+.PHONY: all clean fclean re rr d bonus
