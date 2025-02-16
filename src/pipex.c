@@ -6,44 +6,35 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/15 23:30:50 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/02/16 21:17:35 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-#define FILE_PATH "./infile"
-#ifndef BUFFER_SIZE
-#define BUFFER_SIZE 42
-#endif
-
 void	print_fds(int infile_fd, int *fds)
 {
 	printf("infile_fd = %d\n", infile_fd);
-	printf("pipe(): fds[0] = %d, fds[1] = %d, STDIN_FILENO = %d, STDOUT_FILENO = %d\n", 
+	printf("pipe(): fds[0] = %d, fds[1] = %d, STDIN_FILENO = %d, STDOUT_FILENO = %d\n",
 		fds[0], fds[1], STDIN_FILENO, STDOUT_FILENO);
 }
 
 void	throw_error(char *str)
 {
-	perror(str);
+	if (str)
+		perror(str);
 	exit(EXIT_FAILURE);
 }
 
-// void	validate_arg(int ac, char *av[])
-// {
-// 	if (ac < 2 || 4 < ac)
-// 		throw_error(1);
-// 	if (access(av[1], R_OK) == -1)
-// 	{
-// 		perror("access");
-// 		exit(EXIT_FAILURE);
-// 	}
-// }
+void	validate_arg(int ac)
+{
+	if (ac < 2 || 5 < ac)
+		throw_error(NULL);
+}
 
 char	**add_slash(char **arr)
 {
-	int	i;
+	int		i;
 	char	**added;
 	int		arr_len;
 
@@ -84,86 +75,108 @@ char	*find_cmd_path(char *av, char *envp[])
 			break ;
 		i++;
 	}
-	printf("CC %s\n", path_cmd);
 	return (path_cmd);
+}
+
+void	init_cmd(int ac, t_cmd *cmd)
+{
+	cmd->count = ac - 2;
+	cmd->path = NULL;
+	cmd->arr = NULL;
+}
+
+void	init_fd(t_fd *fd)
+{
+	fd->infile = 0;
+	fd->outfile = 0;
+	fd->pipe[0] = 0;
+	fd->pipe[1] = 0;
+}
+
+void	init_proc(int ac, t_proc *proc)
+{
+	proc->id = malloc(sizeof(int) * (ac - 3));
+	if (!proc->id)
+		throw_error("malloc");
+	proc->status = 0;
 }
 
 int	main(int ac, char *av[], char *envp[])
 {
-	int			infile_fd;
-	int			fds[2];
-	int			status;
-	pid_t		pid;
-	char		*infile;
-	int			cmd_count;
-	char		*cmd_path;
-	char		**cmd_arr;
+	int infile_fd;
+	int outfile_fd;
+	// t_cmd	cmd;
+	// t_fd	fd;
+	// t_proc	proc;
+	int fds[2];
+	int status;
+	char *cmd_path;
+	char **cmd_arr;
 
-	if (ac < 2)
-		return (0);
-	cmd_count = ac - 2;
-	// validate_arg(ac, av);
-
-	infile  = av[1];
-	infile_fd = open(infile, O_RDONLY);
-	if (infile_fd < 0)
-		return (0);
+	// validate_arg(ac);
+	// init_cmd(ac, &cmd);
+	// init_fd(&fd);
+	// init_proc(ac, &proc);
 	if (pipe(fds) != 0)
 		throw_error("pipe");
-	print_fds(infile_fd, fds);
+
 	// cmd 1
-	pid = fork();
-	if (pid == -1)
+	int pid1 = fork();
+	if (pid1 == -1)
 		throw_error("fork");
-	else if (pid == 0)
+	else if (pid1 == 0)
 	{
 		printf("child1\n");
-		cmd_path = find_cmd_path(av[2], envp);
+		infile_fd = open(av[1], O_RDONLY);
+		if (infile_fd == -1)
+			throw_error("infile");
 		cmd_arr = ft_split(av[2], ' ');
+		cmd_path = find_cmd_path(cmd_arr[0], envp);
 		close(fds[0]);
 		if (dup2(infile_fd, STDIN_FILENO) == -1)
 			throw_error("dup2(infile)");
+		close(infile_fd);
 		if (dup2(fds[1], STDOUT_FILENO) == -1)
-			throw_error("dup2(pipe)");
+			throw_error("dup2(pipe_w)");
 		close(fds[1]);
-		print_fds(infile_fd, fds);
 		execve(cmd_path, cmd_arr, envp);
-		throw_error("execve");
+		throw_error("execve1");
 	}
 	else
 	{
-		printf("Parent1-1\n");
-		waitpid(pid, &status, 0);
-		printf("Parent1-2\n");
-		// if (WIFEXITED(status))
-		// 	printf("exit status = %d\n", WEXITSTATUS(status));
-		// exit(EXIT_SUCCESS);
+		close(fds[1]);
+		printf("Parent1\n");
 	}
-	
-	
+
 	// cmd 2
-	pid = fork();
-	if (pid == -1)
+	int pid2 = fork();
+	if (pid2 == -1)
 		throw_error("fork");
-	else if (pid == 0)
+	else if (pid2 == 0)
 	{
 		printf("child2\n");
-		if (dup2(fds[0], STDIN_FILENO) == -1)
-			throw_error("dup2(infile)");
-		if (dup2(STDOUT_FILENO, fds[1]) == -1)
-			throw_error("dup2(pipe)");
-		cmd_path = find_cmd_path(av[3], envp);
-		printf("%s\n", cmd_path);
 		cmd_arr = ft_split(av[3], ' ');
+		cmd_path = find_cmd_path(cmd_arr[0], envp);
+		close(fds[1]);
+		if (dup2(fds[0], STDIN_FILENO) == -1)
+			throw_error("dup2(pipe_r)");
+		close(fds[0]);
+		outfile_fd = open(av[ac - 1], O_WRONLY | O_CREAT, 0644);
+		if (outfile_fd == -1)
+			throw_error("outfile");
+		if (dup2(outfile_fd, STDOUT_FILENO) == -1)
+			throw_error("dup2(outfile)");
+		close(outfile_fd);
 		execve(cmd_path, cmd_arr, envp);
-		throw_error("execve");
+		throw_error("execve2");
 	}
 	else
 	{
-		printf("Parent2-1\n");
-		waitpid(pid, &status, 0);
-		printf("Parent2-2\n");
-		printf("back to parent, cp2 = %d, finished!\n", pid);
+		close(fds[0]);
+		printf("Parent2\n");
 	}
+	waitpid(pid1, &status, 0);
+	waitpid(pid2, &status, 0);
+	printf("pid1 = %d, pid2 = %d\n", pid1, pid2);
 	return (0);
 }
