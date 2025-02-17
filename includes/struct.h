@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 11:19:56 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/16 21:11:39 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/02/17 09:53:28 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@
 typedef struct s_cmd
 {
 	int		count;
+	char	**argv;
+	char	**envp;
+	char	*infile;
+	char	*outfile;
+	int		idx;
 	char	*path;
 	char	**arr;
 }				t_cmd;
