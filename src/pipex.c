@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/17 21:31:37 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/02/21 23:44:46 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ char	*find_cmd_path(char *cmd, char *envp[])
 	{
 		path_cmd = ft_strjoin(split_arr[i], cmd);
 		if (access(path_cmd, X_OK) == 0)
-			break ;
+			return (path_cmd);
 		i++;
 	}
-	return (path_cmd);
+	return (NULL);
 }
 
 void	init_cmd(int ac, char **av, char **envp, t_cmd *cmd)
@@ -120,9 +120,16 @@ void	wait_child_process(t_proc proc, t_cmd cmd)
 	while (i < cmd.count)
 	{
 		waitpid(proc.id[i], &proc.status, 0);
-		printf("pid%d = %d\n", i, proc.id[i]);
+		// printf("\npid%d = %d\n", i, proc.id[i]);
 		i++;
 	}
+}
+
+void	command_not_found(char *cmd)
+{
+	ft_putstr_fd(cmd, STDERR_FILENO);
+	ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	exit(127);
 }
 
 int	main(int ac, char *av[], char *envp[])
@@ -141,63 +148,62 @@ int	main(int ac, char *av[], char *envp[])
 
 	// cmd 1
 	i = 0;
-	proc.id[i] = fork();
-	if (proc.id[i] == -1)
-		throw_error("fork");
-	else if (proc.id[i] == 0)
+	while (i < cmd.count)
 	{
-		printf("child1, pid = %d\n", proc.id[i]);
-		fd.infile = open(cmd.argv[1], O_RDONLY);
-		if (fd.infile == -1)
-			throw_error("infile");
-		cmd.arr = ft_split(cmd.argv[cmd.idx], ' ');
-		for (int j = 0; cmd.arr[j]; j++)
-			printf("cmd.arr1 = %s\n", cmd.arr[j]);
-		cmd.path = find_cmd_path(cmd.arr[0], cmd.envp);
-		printf("path = %s\n", cmd.path);
-		close(fd.pipe[0]);
-		if (dup2(fd.infile, STDIN_FILENO) == -1)
-			throw_error("dup2(infile)");
-		close(fd.infile);
-		if (dup2(fd.pipe[1], STDOUT_FILENO) == -1)
-			throw_error("dup2(pipe_w)");
-		close(fd.pipe[1]);
-		execve(cmd.path, cmd.arr, cmd.envp);
-		throw_error("execve1");
-	}
-	else
-	{
-		close(fd.pipe[1]);
-		printf("Parent1, pid = %d\n", proc.id[i]);
-	}
-
-	i++;
-	// cmd 2
-	proc.id[i] = fork();
-	if (proc.id[i] == -1)
-		throw_error("fork");
-	else if (proc.id[i] == 0)
-	{
-		printf("child2, pid = %d\n", proc.id[i]);
-		cmd.arr = ft_split(cmd.argv[++cmd.idx], ' ');
-		cmd.path = find_cmd_path(cmd.arr[0], cmd.envp);
-		close(fd.pipe[1]);
-		if (dup2(fd.pipe[0], STDIN_FILENO) == -1)
-			throw_error("dup2(pipe_r)");
-		close(fd.pipe[0]);
-		fd.outfile = open(av[ac - 1], O_WRONLY);
-		if (fd.outfile == -1)
-			throw_error("outfile");
-		if (dup2(fd.outfile, STDOUT_FILENO) == -1)
-			throw_error("dup2(outfile)");
-		close(fd.outfile);
-		execve(cmd.path, cmd.arr, cmd.envp);
-		throw_error("execve2");
-	}
-	else
-	{
-		close(fd.pipe[0]);
-		printf("Parent2, pid = %d\n", proc.id[i]);
+		proc.id[i] = fork();
+		if (proc.id[i] == -1)
+			throw_error("fork");
+		else if (proc.id[i] == 0)
+		{
+			// printf("\nchild%d, pid = %d\n", i, proc.id[i]);
+			cmd.arr = ft_split(cmd.argv[cmd.idx], ' ');
+			// printf("cmd.index = %d\n", cmd.idx);
+			cmd.path = find_cmd_path(cmd.arr[0], cmd.envp);
+			if (!cmd.path)
+				command_not_found(cmd.arr[0]);
+			// printf("path = %s\n", cmd.path);
+			// for (int j = 0; cmd.arr[j]; j++)
+			// 	printf("cmd.arr%d = %s\n", i, cmd.arr[j]);
+			if (i == 0)
+			{
+				fd.infile = open(cmd.infile, O_RDONLY);
+				if (fd.infile == -1)
+					throw_error("infile");
+				// printf("pfd[0] = %d, pfd[1] = %d, infile fd = %d\n", fd.pipe[0], fd.pipe[1], fd.infile);
+				close(fd.pipe[0]);
+				if (dup2(fd.infile, STDIN_FILENO) == -1)
+					throw_error("dup2(infile)");
+				close(fd.infile);
+				if (dup2(fd.pipe[1], STDOUT_FILENO) == -1)
+					throw_error("dup2(pipe_w)");
+				close(fd.pipe[1]);
+			}
+			if (i == cmd.count - 1)
+			{
+				close(fd.pipe[1]);
+				if (dup2(fd.pipe[0], STDIN_FILENO) == -1)
+					throw_error("dup2(pipe_r)");
+				close(fd.pipe[0]);
+				fd.outfile = open(cmd.outfile, O_WRONLY);
+				if (fd.outfile == -1)
+					throw_error("outfile");
+				if (dup2(fd.outfile, STDOUT_FILENO) == -1)
+					throw_error("dup2(outfile)");
+				close(fd.outfile);
+			}
+			execve(cmd.path, cmd.arr, cmd.envp);
+			throw_error("execve");
+		}
+		else
+		{
+			if (i == 0)
+				close(fd.pipe[1]);
+			if (i == cmd.count - 1)
+				close(fd.pipe[0]);
+			cmd.idx++;
+			// printf("Parent%d, pid = %d\n", i, proc.id[i]);
+		}
+		i++;
 	}
 
 	wait_child_process(proc, cmd);
