@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/22 18:42:07 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/02/22 18:54:16 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,34 @@ void	find_cmd(t_cmd *cmd)
 	}
 }
 
+void	read_from_infile(t_cmd *cmd, t_fd *fd)
+{
+	fd->infile = open(cmd->infile, O_RDONLY);
+	if (fd->infile == -1)
+		throw_error("infile");
+	if (dup2(fd->infile, STDIN_FILENO) == -1)
+		throw_error("dup2(infile)");
+	close(fd->infile);
+	if (dup2(fd->pipe[1], STDOUT_FILENO) == -1)
+		throw_error("dup2(pipe_w)");
+	close(fd->pipe[0]);
+	close(fd->pipe[1]);
+}
+
+void	write_to_outfile(t_cmd *cmd, t_fd *fd)
+{
+	close(fd->pipe[1]);
+	if (dup2(fd->pipe[0], STDIN_FILENO) == -1)
+		throw_error("dup2(pipe_r)");
+	close(fd->pipe[0]);
+	fd->outfile = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd->outfile == -1)
+		throw_error("outfile");
+	if (dup2(fd->outfile, STDOUT_FILENO) == -1)
+		throw_error("dup2(outfile)");
+	close(fd->outfile);
+}
+
 void	do_pipex(t_cmd *cmd, t_fd *fd, t_proc *proc)
 {
 	int	i;
@@ -175,31 +203,9 @@ void	do_pipex(t_cmd *cmd, t_fd *fd, t_proc *proc)
 			find_cmd(cmd);
 			printf("%s\n", cmd->path);
 			if (i == 0)
-			{
-				fd->infile = open(cmd->infile, O_RDONLY);
-				if (fd->infile == -1)
-					throw_error("infile");
-				if (dup2(fd->infile, STDIN_FILENO) == -1)
-					throw_error("dup2(infile)");
-				close(fd->infile);
-				if (dup2(fd->pipe[1], STDOUT_FILENO) == -1)
-					throw_error("dup2(pipe_w)");
-				close(fd->pipe[0]);
-				close(fd->pipe[1]);
-			}
+				read_from_infile(cmd, fd);
 			if (i == cmd->count - 1)
-			{
-				close(fd->pipe[1]);
-				if (dup2(fd->pipe[0], STDIN_FILENO) == -1)
-					throw_error("dup2(pipe_r)");
-				close(fd->pipe[0]);
-				fd->outfile = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-				if (fd->outfile == -1)
-					throw_error("outfile");
-				if (dup2(fd->outfile, STDOUT_FILENO) == -1)
-					throw_error("dup2(outfile)");
-				close(fd->outfile);
-			}
+				write_to_outfile(cmd, fd);
 			// else
 			// {
 			// 	if (dup2(fd->pipe[0], STDIN_FILENO) == -1)
