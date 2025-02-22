@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 23:43:52 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/16 11:52:24 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/02/22 21:38:52 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <stdlib.h>
 # include <errno.h>
 # include <sys/wait.h>
-# include "../libft/libft.h"
+# include "../src/libft/libft.h"
 # include "struct.h"
 
 

@@ -1,13 +1,13 @@
 NAME := pipex
 CC := cc
-CPPFLAGS := -I./includes -Ilibft
+CPPFLAGS := -I./includes -I./src/libft
 CFLAGS := -Wall -Werror -Wextra
 SRC := pipex.c
 OBJDIR := ./obj
 OBJ := $(SRC:%.c=$(OBJDIR)/%.o)
-LDFLAGS := -Llibft
+LDFLAGS := -L./src/libft
 LDLIBS := -lft
-LIBFTDIR := ./libft
+LIBFTDIR := ./src/libft
 LIBFT := $(LIBFTDIR)/libft.a
 
 vpath %.c ./src

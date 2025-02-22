@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/22 18:54:16 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/02/22 19:04:26 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,12 @@ void	write_to_outfile(t_cmd *cmd, t_fd *fd)
 	close(fd->outfile);
 }
 
+void	do_execve(t_cmd *cmd)
+{
+	execve(cmd->path, cmd->arr, cmd->envp);
+		throw_error("execve");
+}
+
 void	do_pipex(t_cmd *cmd, t_fd *fd, t_proc *proc)
 {
 	int	i;
@@ -206,17 +212,7 @@ void	do_pipex(t_cmd *cmd, t_fd *fd, t_proc *proc)
 				read_from_infile(cmd, fd);
 			if (i == cmd->count - 1)
 				write_to_outfile(cmd, fd);
-			// else
-			// {
-			// 	if (dup2(fd->pipe[0], STDIN_FILENO) == -1)
-			// 		throw_error("dup2(pipe_r)");
-			// 	close(fd->pipe[0]);
-			// 	if (dup2(fd->pipe[1], STDOUT_FILENO) == -1)
-			// 		throw_error("dup2(pipe_w)");
-			// 	close(fd->pipe[1]);
-			// }
-			execve(cmd->path, cmd->arr, cmd->envp);
-			throw_error("execve");
+			do_execve(cmd);
 		}
 		else
 		{
@@ -225,7 +221,6 @@ void	do_pipex(t_cmd *cmd, t_fd *fd, t_proc *proc)
 			if (i == cmd->count - 1)
 				close(fd->pipe[0]);
 			cmd->idx++;
-			// printf("Parent%d, pid = %d\n", i, proc->id[i]);
 		}
 		i++;
 	}
@@ -237,14 +232,12 @@ int	main(int ac, char *av[], char *envp[])
 	t_fd	fd;
 	t_proc	proc;
 
-	// validate_arg(ac);
+	validate_arg(ac);
 	init_cmd(ac, av, envp, &cmd);
 	init_fd(&fd, cmd);
 	init_proc(ac, &proc, cmd);
 	if (pipe(fd.pipe) != 0)
 		throw_error("pipe");
-
-	// cmd 1
 	do_pipex(&cmd, &fd, &proc);
 	wait_child_process(proc, cmd);
 	free_proc(&proc);
