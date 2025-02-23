@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 11:19:56 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/17 09:53:28 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/02/23 15:30:37 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef struct s_fd
 {
 	int	infile;
 	int	outfile;
-	int pipe[2];
+	int	pipe[2];
 }				t_fd;
 
 typedef struct s_proc
