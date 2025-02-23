@@ -2,7 +2,8 @@ NAME := pipex
 CC := cc
 CPPFLAGS := -I./includes -I./src/libft
 CFLAGS := -Wall -Werror -Wextra
-SRC := pipex.c
+SRC := pipex.c init.c free_any.c error.c do_func.c close_fd.c\
+	read_and_write.c find_cmd_1.c find_cmd_2.c
 OBJDIR := ./obj
 OBJ := $(SRC:%.c=$(OBJDIR)/%.o)
 LDFLAGS := -L./src/libft
@@ -21,8 +22,6 @@ all: $(LIBFT) $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFTDIR)
-
-$(warning obj=$(OBJ))
 
 $(NAME): $(OBJ) $(LIBFT)
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
