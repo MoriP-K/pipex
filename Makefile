@@ -32,6 +32,8 @@ $(OBJDIR)/%.o:%.c | $(OBJDIR)
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
+# $(warning obj=$(OBJ))
+
 clean:
 	$(RM) -r $(OBJ) $(OBJDIR)
 	$(MAKE) -C $(LIBFTDIR) clean
