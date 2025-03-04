@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 23:44:29 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/23 20:12:37 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/03/04 23:11:53 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,19 @@ int	main(int ac, char *av[], char *envp[])
 	t_fd	fd;
 	t_proc	proc;
 
-	validate_arg(ac);
+	// validate_arg(ac);
 	init_cmd(ac, av, envp, &cmd);
-	init_fd(&fd, cmd);
+	init_fd(&fd, &cmd);
 	init_proc(&proc, cmd);
-	if (pipe(fd.pipe) != 0)
-	{
-		all_free(&cmd, &proc);
-		throw_error("pipe", NULL, NULL, NONE);
-	}
+	// if (pipe(fd.pipe) != 0)
+	// {
+	// 	all_free(&cmd, &proc);
+	// 	throw_error("pipe", NULL, NULL, NONE);
+	// }
 	do_pipex(&cmd, &fd, &proc);
 	wait_child_process(proc, cmd);
-	free_proc(&proc);
-	close_fds(&fd, NONE);
+	all_free(&cmd, &fd, &proc);
+	// free_proc(&proc);
+	close_fds(&cmd, &fd, NONE);
 	return (0);
 }

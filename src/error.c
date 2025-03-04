@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:05:45 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/23 23:22:15 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/03/04 20:15:33 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	command_not_found(t_cmd *cmd, t_fd *fd, int timing)
 	write(STDERR_FILENO, cmd->arr[0], ft_strlen(cmd->arr[0]));
 	write(STDERR_FILENO, ": command not found\n", 20);
 	free_cmd(cmd);
-	close_fds(fd, timing);
+	close_fds(cmd, fd, timing);
 	exit(127);
 }
 
@@ -45,6 +45,6 @@ void	throw_error(char *str, t_cmd *cmd, t_fd *fd, int timing)
 		free(error_msg);
 	}
 	free_cmd(cmd);
-	close_fds(fd, timing);
+	close_fds(cmd, fd, timing);
 	exit(EXIT_FAILURE);
 }

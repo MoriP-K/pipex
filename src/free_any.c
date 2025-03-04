@@ -6,13 +6,13 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:04:14 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/23 19:05:15 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/03/04 23:19:29 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	free_array(char	**array)
+void	free_array(char **array)
 {
 	int	i;
 
@@ -42,10 +42,33 @@ void	free_proc(t_proc *proc)
 		free(proc->id);
 }
 
-void	all_free(t_cmd *cmd, t_proc *proc)
+void	free_pipe(int **pipe, int count)
 {
-	free_proc(proc);
+	int	i;
+
+	if (pipe)
+	{
+		i = 0;
+		while (i < count)
+		{
+			free(pipe[i]);
+			i++;
+		}
+		free(pipe);
+	}
+}
+
+void	free_fd(t_fd *fd, t_cmd *cmd)
+{
+	if (fd->pipe)
+		free_pipe(fd->pipe, cmd->count);
+}
+
+void	all_free(t_cmd *cmd, t_fd *fd, t_proc *proc)
+{
 	free_cmd(cmd);
+	free_fd(fd, cmd);
+	free_proc(proc);
 }
 
 void	*free_array_and_added(char **arr, char **added)

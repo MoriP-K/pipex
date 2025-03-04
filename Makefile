@@ -51,4 +51,4 @@ rr :
 d: clean
 	$(MAKE) DEBUG=true
 
-.PHONY: all clean fclean re rr d bonus
+.PHONY: all clean fclean re rr d

@@ -6,7 +6,7 @@
 /*   By: kmoriyam <kmoriyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:00:51 by kmoriyam          #+#    #+#             */
-/*   Updated: 2025/02/23 19:28:18 by kmoriyam         ###   ########.fr       */
+/*   Updated: 2025/03/04 23:36:00 by kmoriyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,30 @@ void	init_cmd(int ac, char **av, char **envp, t_cmd *cmd)
 	cmd->arr = NULL;
 }
 
-void	init_fd(t_fd *fd, t_cmd cmd)
+void	init_fd(t_fd *fd, t_cmd *cmd)
 {
 	int	i;
+	int	j;
 
-	fd->infile = 0;
-	fd->outfile = 0;
+	fd->infile = -1;
+	fd->outfile = -1;
+	fd->pipe = malloc(sizeof(int *) * cmd->count);
+	if (!fd->pipe)
+		throw_error("malloc", cmd, fd, NONE);
 	i = 0;
-	while (i < cmd.count)
-		fd->pipe[i++] = 0;
+	while (i < cmd->count)
+	{
+		fd->pipe[i] = malloc(sizeof(int) * 2);
+		if (!fd->pipe[i])
+		{
+			free_pipe(fd->pipe, cmd->count);
+			throw_error("malloc", cmd, fd, NONE);
+		}
+		j = 0;
+		while (j < 2)
+			fd->pipe[i][j++] = 0;
+		i++;
+	}
 }
 
 void	init_proc(t_proc *proc, t_cmd cmd)
